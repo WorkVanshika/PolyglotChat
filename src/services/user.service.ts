@@ -1,4 +1,4 @@
-import { IUser, User, userSchema } from "../models/user.model";
+import { IUser, User } from "../models/user.model";
 import jwt from "jsonwebtoken";
 import { Document } from "mongoose";
 import * as bcrypt from "bcrypt";
@@ -227,6 +227,110 @@ export class UserService {
       return {
         status: 500,
         message: "Something went Wrong!",
+      };
+    }
+  }
+
+  /* This function is for sharing the list of total users of our system
+  This API is paginated so that load of our system's server & database server decreases.
+  Plus better User Expirence as pagination divides large sata sets into small parts
+   */
+  public static async usersList(
+    limit: number,
+    page: number
+  ): Promise<{
+    status: number;
+    message: string;
+    data?: {
+      usersArray: Array<{
+        name: string;
+        email: string;
+        preferredLanguage: string;
+      }>;
+      totalPages: number;
+      currentPage: number;
+    };
+  }> {
+    try {
+      console.log("limit  received: ", limit, "page received: ", page);
+      if (page === 0) {
+        page = 1; // correcting the page param before making db operation
+      }
+      if (limit === 0) {
+        limit = 10; // correcting the limit param before making db operation
+      }
+      const users = await UserRepository.getAllUsers(limit, page);
+      const totalUsers = await UserRepository.countUsers();
+      const usersArray = users.map((user) => {
+        return {
+          name: user.fullName,
+          email: user.email,
+          preferredLanguage: user.preferredLanguage,
+        };
+      });
+      return {
+        status: 200,
+        message: "Users fetching successful!",
+        data: {
+          usersArray,
+          totalPages: Math.ceil(totalUsers / limit),
+          currentPage: page,
+        },
+      };
+    } catch (err) {
+      console.log("err", err);
+      return {
+        status: 500,
+        message: "Something went Wrong while fetching users!",
+      };
+    }
+  }
+
+  /* This function is for deleting users from our system
+  This operation can only be performed by Admin user.
+  Admin user can delete user of `normal` role.
+  But `admin` user role can't be deleted.
+   */
+  public static async deleteUser(
+    email: string,
+    requestUser: IUser & Document
+  ): Promise<{
+    status: number;
+    message: string;
+  }> {
+    try {
+      //authorizing the user. if user is of Admin role, only then we will allow them to delete user
+      if (requestUser.role !== USER_ROLES_ENUM.ADMIN) {
+        return {
+          status: 403,
+          message: "Only Admins can delete users",
+        };
+      }
+      const userToBeDeleted = await UserRepository.findUserBySpecificFields({
+        email,
+      });
+      if (!userToBeDeleted) {
+        return {
+          status: 400,
+          message: "No user exists with this email!",
+        };
+      } else if (userToBeDeleted.role === USER_ROLES_ENUM.ADMIN) {
+        return {
+          status: 400,
+          message: "Admin user can't be deleted!",
+        };
+      }
+      // if user exists we will delete that particular user
+      await UserRepository.deleteUser(email);
+      return {
+        status: 200,
+        message: "User deletion successful!!",
+      };
+    } catch (err) {
+      console.log("err", err);
+      return {
+        status: 500,
+        message: "Room deletion failed !! ",
       };
     }
   }

@@ -22,4 +22,19 @@ export class UserRepository {
     console.log("updateQuery ==> ", updateQuery);
     return await User.findByIdAndUpdate(queryFields, updateQuery);
   }
+
+  public static async getAllUsers(limit: number, page: number) {
+    return await User.find({})
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .exec();
+  }
+
+  public static async countUsers() {
+    return await User.countDocuments();
+  }
+
+  public static async deleteUser(email: string) {
+    return await User.deleteOne({ email });
+  }
 }

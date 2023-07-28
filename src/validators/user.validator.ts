@@ -1,4 +1,4 @@
-import { ValidationChain, body, param, query } from "express-validator";
+import { ValidationChain, body, query } from "express-validator";
 import { LANGUAGE_ENUM } from "../helpers/user.helper";
 
 export const registerUserValidator = (): ValidationChain[] => {
@@ -83,5 +83,32 @@ export const changeUserDetailsValidator = (): ValidationChain[] => {
       .withMessage({
         error_code: "preferred Language must be one from the given options",
       }),
+  ];
+};
+
+export const getUsersListValidator = (): ValidationChain[] => {
+  return [
+    query("limit")
+      .optional()
+      .bail()
+      .isNumeric()
+      .withMessage({ error_code: "limit must be number" }),
+    query("page")
+      .optional()
+      .bail()
+      .isNumeric()
+      .withMessage({ error_code: "page must be number" }),
+  ];
+};
+
+export const deleteUserValidator = (): ValidationChain[] => {
+  return [
+    query("email")
+      .not()
+      .isEmpty()
+      .withMessage({ error_code: "please add user email as query parameter" })
+      .bail()
+      .isEmail()
+      .withMessage({ error_code: "Room name must be an email" }),
   ];
 };

@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from "express";
 import Mongoose from "mongoose";
 import http from "http";
 const UserRouter = require("./routers/user.route");
+const RoomRouter = require("./routers/room.route");
 import * as bodyParser from "body-parser";
 
 require("dotenv").config();
@@ -21,6 +22,7 @@ app.use(bodyParser.json());
  * Register Routes
  */
 app.use("/user", UserRouter);
+app.use("/room", RoomRouter);
 
 Mongoose.connect(process.env.DATABASE_URL)
   .then(() => {

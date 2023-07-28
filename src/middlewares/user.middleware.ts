@@ -9,7 +9,7 @@ export class UserMiddleware {
       const token = req.headers.authorization;
       if (!token) {
         return res
-          .status(400)
+          .status(401)
           .json({ message: "Authorization token not found!" });
       }
 
@@ -19,7 +19,7 @@ export class UserMiddleware {
           .status(400)
           .json({ message: "User Not found with this token!" });
       }
-      // attaching user found from authentication token to request, so that it can be user
+      // attaching user found from authentication token to request, so that it can be used
       // in later functions
       req.user = user;
       next();

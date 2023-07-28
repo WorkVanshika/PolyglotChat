@@ -38,4 +38,12 @@ export class UserController {
   ) {
     return await UserService.changeUserDetails(user, updatedUserDetails);
   }
+
+  public static async listOfAllUsers(limit: number, page: number) {
+    return await UserService.usersList(limit, page);
+  }
+
+  public static async deleteUser(userEmail: string, user: IUser & Document) {
+    return await UserService.deleteUser(userEmail, user);
+  }
 }

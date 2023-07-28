@@ -59,8 +59,8 @@ router.get(
 
 router.put(
   "/changePassword",
-  customValidate(UserValidators.changePasswordValidator()),
   UserMiddleware.authenticateUser,
+  customValidate(UserValidators.changePasswordValidator()),
   async function (req: Request, res: Response) {
     const changeUserPasswordResult = await UserController.changePassword(
       req.user,
@@ -75,8 +75,8 @@ router.put(
 
 router.put(
   "/changeUserDetails",
-  customValidate(UserValidators.changeUserDetailsValidator()),
   UserMiddleware.authenticateUser,
+  customValidate(UserValidators.changeUserDetailsValidator()),
   async function (req: Request, res: Response) {
     const changeUserDetailsResult = await UserController.changeUserDetails(
       req.user,
@@ -84,6 +84,37 @@ router.put(
     );
     return res.status(changeUserDetailsResult.status).json({
       message: changeUserDetailsResult.message,
+    });
+  }
+);
+
+router.get(
+  "/",
+  UserMiddleware.authenticateUser,
+  customValidate(UserValidators.getUsersListValidator()),
+  async function (req: Request, res: Response) {
+    const userListResponse = await UserController.listOfAllUsers(
+      Number(req.query.limit || 10),
+      Number(req.query.page || 1)
+    );
+    return res.status(userListResponse.status).json({
+      message: userListResponse.message,
+      data: userListResponse.data,
+    });
+  }
+);
+
+router.delete(
+  "/",
+  UserMiddleware.authenticateUser,
+  customValidate(UserValidators.deleteUserValidator()),
+  async function (req: Request, res: Response) {
+    const roomListResponse = await UserController.deleteUser(
+      req.query.email,
+      req.user
+    );
+    return res.status(roomListResponse.status).json({
+      message: roomListResponse.message,
     });
   }
 );
