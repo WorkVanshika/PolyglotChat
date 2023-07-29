@@ -1,6 +1,6 @@
 import { IUser, User } from "../models/user.model";
 import jwt from "jsonwebtoken";
-import { Document } from "mongoose";
+import { Document, ObjectId } from "mongoose";
 import * as bcrypt from "bcrypt";
 import { UserRepository } from "../data-access/user.repository";
 import { IUpdateUserDetails, USER_ROLES_ENUM } from "../helpers/user.helper";
@@ -244,6 +244,7 @@ export class UserService {
     data?: {
       usersArray: Array<{
         name: string;
+        _id: ObjectId;
         email: string;
         preferredLanguage: string;
       }>;
@@ -264,6 +265,7 @@ export class UserService {
       const usersArray = users.map((user) => {
         return {
           name: user.fullName,
+          _id: user._id,
           email: user.email,
           preferredLanguage: user.preferredLanguage,
         };
@@ -330,7 +332,7 @@ export class UserService {
       console.log("err", err);
       return {
         status: 500,
-        message: "Room deletion failed !! ",
+        message: "User deletion failed !! ",
       };
     }
   }

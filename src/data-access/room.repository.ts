@@ -1,4 +1,6 @@
-import { Room } from "../models/room.model";
+import { userSocketIdLanguageResponse } from "../helpers/room.helper";
+import { FilterQuery, PipelineStage, UpdateQuery } from "mongoose";
+import { IRoom, Room } from "../models/room.model";
 
 export class RoomRepository {
   public static async createRoom(roomName: string, userId) {
@@ -25,5 +27,18 @@ export class RoomRepository {
 
   public static async deleteRoom(roomName: string) {
     return await Room.findOneAndDelete({ name: roomName });
+  }
+
+  public static async findOneAndUpdate(
+    filterquery: FilterQuery<IRoom>,
+    updateQuery: UpdateQuery<IRoom>
+  ) {
+    return await Room.findOneAndUpdate(filterquery, updateQuery);
+  }
+
+  public static async executeAggregateQuery(
+    queryPipeline: PipelineStage[]
+  ): Promise<userSocketIdLanguageResponse[]> {
+    return await Room.aggregate(queryPipeline);
   }
 }

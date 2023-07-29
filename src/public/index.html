@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PolyglotChat</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Welcome to PolyGlotChat!</h1>
+
+      <!-- Join Room Form -->
+      <div>
+        <h2>Join Room</h2>
+        <form id="joinRoomForm">
+          <input
+            type="email"
+            name="useremail"
+            placeholder="User Email"
+            required
+          />
+          <input type="text" name="roomId" placeholder="Room Name" required />
+          <button type="submit">Join Room</button>
+        </form>
+      </div>
+      <div id="joinRoomSuccess"></div>
+
+      <!-- Send Message Form -->
+      <div>
+        <h2>Start Conversation</h2>
+        <form id="sendMessageForm">
+          <input
+            type="text"
+            name="message"
+            placeholder="Type your message..."
+            required
+          />
+          <input type="text" name="roomId" placeholder="Room Name" required />
+          <input type="text" name="username" placeholder="User Name" required />
+          <button type="submit">Send</button>
+        </form>
+      </div>
+      <div id="chatMessages"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
+    <script src="scripts.js"></script>
+  </body>
+</html>
