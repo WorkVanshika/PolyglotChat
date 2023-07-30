@@ -7,14 +7,14 @@ export const registerUserValidator = (): ValidationChain[] => {
       .not()
       .isEmpty()
       .withMessage({ error_code: "fullName is compulsory" })
-      .bail()
-      //   .custom((value) => typeof value === "string")
+      .bail() // this will stop the validation if above condition fails
       .isString()
       .withMessage({ error_code: "fullName must be string" }),
     body("email")
       .not()
       .isEmpty()
       .withMessage({ error_code: "please enter email" })
+      .bail()
       .trim()
       .isEmail()
       .withMessage({ error_code: "Please enter proper email" }),
@@ -22,12 +22,14 @@ export const registerUserValidator = (): ValidationChain[] => {
       .not()
       .isEmpty()
       .withMessage({ error_code: "please enter password" })
+      .bail()
       .isString()
       .withMessage({ error_code: "Password must be string" }),
     body("preferredLanguage")
       .not()
       .isEmpty()
       .withMessage({ error_code: "preferredLanguage is compulsory" })
+      .bail()
       .isIn(Object.values(LANGUAGE_ENUM))
       .withMessage({
         error_code: "preferred Language must be one from the given options",

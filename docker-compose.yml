@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  polyglotchat:
+    image: polyglotchat
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3000:3000
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=mongodb://host.docker.internal:27017/polyglotchat
+      - PORT=3000
